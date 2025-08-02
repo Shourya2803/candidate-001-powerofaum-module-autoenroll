@@ -1,22 +1,15 @@
-import fs from 'fs';
-import path from 'path';
+// lib/memory.js
 
-const filePath = path.join(process.cwd(), 'lib', 'trials.json');
+let trialData = {
+  totalTrials: 0,
+  activeTrials: 0,
+  activeTrialUserIds: [],
+};
 
-export function loadTrials() {
-  if (!fs.existsSync(filePath)) return [];
-  const data = fs.readFileSync(filePath, 'utf-8');
-  return JSON.parse(data);
+export function getTrials() {
+  return trialData;
 }
 
-export function saveTrials(trials) {
-  const dirPath = path.dirname(filePath);
-  
-  // Create directory if not exists
-  if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath, { recursive: true });
-  }
-
-  // Write file
-  fs.writeFileSync(filePath, JSON.stringify(trials, null, 2));
+export function saveTrials(data) {
+  trialData = data;
 }
