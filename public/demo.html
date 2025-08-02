@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Auto-Enroll Demo</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f9fc;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    h1, h2 {
+      color: #2c3e50;
+    }
+
+    .card {
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.6rem 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #388e3c;
+    }
+
+    pre {
+      background: #272822;
+      color: #f8f8f2;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 0.95rem;
+      max-width: 500px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Auto-Enroll to Pro Trial</h1>
+    <input type="text" id="userId" placeholder="Enter User ID" />
+    <button onclick="autoEnroll()">Enroll</button>
+  </div>
+
+  <div class="card">
+    <h2>Trial Check</h2>
+    <button onclick="checkTrials()">Run Cron Check</button>
+  </div>
+
+  <div class="card">
+    <h2>Trial Metrics</h2>
+    <button onclick="getMetrics()">Get Metrics</button>
+  </div>
+
+  <pre id="output">Click a button to see results...</pre>
+
+  <script>
+    async function autoEnroll() {
+      const userId = document.getElementById('userId').value;
+      const res = await fetch('/api/auto-enroll-pro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+      const data = await res.json();
+      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function checkTrials() {
+      const res = await fetch('/api/cron-check-trials');
+      const data = await res.json();
+      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function getMetrics() {
+      const res = await fetch('/api/pro-trial-metrics');
+      const data = await res.json();
+      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
