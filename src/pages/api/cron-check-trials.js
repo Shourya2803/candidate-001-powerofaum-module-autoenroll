@@ -1,19 +1,19 @@
-// src/pages/api/cron-check-trials.js
-
-import { getTrials, saveTrials } from "@/lib/memory";
+import { loadTrials, saveTrials } from "@/lib/memory";
 
 export default function handler(req, res) {
   if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const trials = getTrials();
+  const now = new Date();
+  const trials = loadTrials();
 
-  // Simulate expiring all trials after one check
-  trials.activeTrials = 0;
-  trials.activeTrialUserIds = [];
+  const updatedTrials = trials.filter((trial) => {
+    const isActive = new Date(trial.expiresAt) > now;
+    return isActive;
+  });
 
-  saveTrials(trials);
+  saveTrials(updatedTrials);
 
-  return res.status(200).json({ message: "Trial check done. All trials expired.", trials });
+  res.status(200).json({ message: "Expired trials removed", remaining: updatedTrials.length });
 }

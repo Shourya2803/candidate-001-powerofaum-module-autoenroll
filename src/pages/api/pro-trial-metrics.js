@@ -1,17 +1,16 @@
-// src/pages/api/pro-trial-metrics.js
-
-import { getTrials } from "@/lib/memory";
+import { loadTrials } from '@/lib/memory';
 
 export default function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  res.setHeader('Cache-Control', 'no-store');
+  const trials = loadTrials();
 
-  const trials = getTrials();
+  const totalTrials = trials.length;
+  const now = new Date();
+  const activeTrials = trials.filter((trial) => new Date(trial.expiresAt) > now);
 
-  return res.status(200).json({
-    totalTrials: trials.totalTrials,
-    activeTrials: trials.activeTrials,
-    activeTrialUserIds: trials.activeTrialUserIds,
+  res.status(200).json({
+    totalTrials,
+    activeTrials: activeTrials.length,
+    activeTrialUserIds: activeTrials.map((trial) => trial.userId),
   });
 }
