@@ -8,5 +8,10 @@
     "userId": "user",
     "plan": "pro_trial",
     "expiresAt": "2025-08-05T10:07:37.480Z"
+  },
+  {
+    "userId": "grave",
+    "plan": "pro_trial",
+    "expiresAt": "2025-08-05T10:25:52.585Z"
   }
 ]
